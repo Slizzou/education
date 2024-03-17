@@ -44,12 +44,12 @@
               <!-- Conditionally show label based on user's role -->
               <label *ngIf="signupForm.value.role == 'requested_teacher'">
                 Upload your CV
-                <input type="file" formControlName="cv" class="form-control" #filePicker (change)="onPDFSelected($event)">
+                <input type="file"  class="form-control" #filePicker (change)="onPDFSelected($event)">
               </label>
               <label *ngIf="signupForm.value.role !== 'requested_teacher'">
                 
                 Select your avatar
-                <input type="file" formControlName="img" class="form-control" #filePicker (change)="onImageSelected($event)">
+                <input type="file"  class="form-control" #filePicker (change)="onImageSelected($event)">
               </label>
             </div>
           </div>

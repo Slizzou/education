@@ -40,7 +40,7 @@ user:any
     } else {
       // Default avatar image URL if user or avatar path is not available
       return 'default-avatar-url.jpg';
-    }
+    }//
   }
   
 }
