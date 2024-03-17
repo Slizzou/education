@@ -1,0 +1,66 @@
+<div class="hero overlay" style="background-image: url('assets/images/bg_3.jpg');">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-9 mx-auto text-center">
+        <h1 class="text-white">Signup</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="site-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <form [formGroup]="signupForm">
+          <!-- First Name Field -->
+          <div class="form-group">
+            <input type="text" formControlName="firstName" class="form-control" placeholder="Firstname">
+          </div>
+
+          <!-- Last Name Field -->
+          <div class="form-group">
+            <input type="text" formControlName="lastName" class="form-control" placeholder="Lastname">
+          </div>
+
+          <!-- Email Field -->
+          <div class="form-group">
+            <input type="email" formControlName="email" class="form-control" placeholder="Email">
+          </div>
+
+          <!-- Password Field -->
+          <div class="form-group">
+            <input type="password" formControlName="pwd" class="form-control" placeholder="Password">
+          </div>
+
+          <!-- Phone Number Field -->
+          <div class="form-group">
+            <input type="number" formControlName="phoneNumber" class="form-control" [placeholder]="signupForm.value.role === 'parent' ? 'Enter your child\'s phone number' : 'Phone Number'">
+          </div>
+
+          <!-- File upload field -->
+          <div class="form-group">
+            <div class="text-center">
+              <!-- Conditionally show label based on user's role -->
+              <label *ngIf="signupForm.value.role == 'requested_teacher'">
+                Upload your CV
+                <input type="file" formControlName="cv" class="form-control" #filePicker (change)="onPDFSelected($event)">
+              </label>
+              <label *ngIf="signupForm.value.role !== 'requested_teacher'">
+                
+                Select your avatar
+                <input type="file" formControlName="img" class="form-control" #filePicker (change)="onImageSelected($event)">
+              </label>
+            </div>
+          </div>
+
+          <!-- Signup button -->
+          <div class="form-group">
+            <input type="submit" (click)="signup()" [disabled]="signupForm.invalid" class="btn btn-primary py-3 px-5" [value]="signupForm.value.role === 'requested_teacher' ? 'Become a Teacher' : 'Signup'">
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

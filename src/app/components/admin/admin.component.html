@@ -1,0 +1,29 @@
+<section class="py-4 text-center">
+  <h2><i class="fa fa-dashboard"></i> Admin Dashboard</h2>
+</section>
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link" id="user-tab" data-toggle="tab" href="#users" role="tab" aria-controls="profile"
+      aria-selected="false"><i class="fa fa-users"></i> All Users</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+      aria-selected="true"><i class="fa fa-book"></i> Courses</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+      aria-selected="false"><i class="fa fa-users"></i> Teachers</a>
+  </li>
+ 
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+    <app-courses-table></app-courses-table>
+  </div>
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+    <app-teachers-table></app-teachers-table>
+  </div>
+  <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="users-tab">
+    <app-allusers></app-allusers>
+  </div>
+</div>

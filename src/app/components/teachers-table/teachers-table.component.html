@@ -1,0 +1,31 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">First Name</th>
+      <th scope="col">Last Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Validation Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let teacher of teachers">
+      <td>{{ teacher?._id }}</td>
+      <td>{{ teacher?.firstName }}</td>
+      <td>{{ teacher?.lastName }}</td>
+      <td>{{ teacher?.email }}</td>
+      <td>
+        <span *ngIf="teacher.role === 'teacher'">
+          <i class="fa fa-check-circle text-success"></i> Validated
+        </span>
+        <span *ngIf="teacher.role == 'requested_teacher'">
+          <button type="button" class="btn btn-success" (click)="validateTeacher(teacher._id)">
+            Validate Teacher
+          </button>
+          
+        
+        </span>
+      </td>
+    </tr>
+  </tbody>
+</table>

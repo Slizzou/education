@@ -1,0 +1,45 @@
+<div class="hero overlay" style="background-image: url('assets/images/bg_3.jpg');">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-9 mx-auto text-center">
+        <!-- Change title based on user role -->
+        <h1 class="text-white">{{ isAdmin ? 'Add Students' : 'Add Course' }}</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="site-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <form [formGroup]="courseform" (ngSubmit)="addCourse()">
+          <div >
+            <div class="form-group">
+              <input type="text" formControlName="name" class="form-control" placeholder="{{ isAdmin ? 'Edited Name' : 'Name' }}">
+            </div>
+            <div class="form-group">
+              <input type="text" formControlName="description" class="form-control" placeholder="{{ isAdmin ? 'Edited Description' : 'Description' }}">
+            </div>
+            <div class="form-group">
+              <input type="number" formControlName="duration" class="form-control" placeholder="{{ isAdmin ? 'Edited Duration' : 'Duration' }}">
+            </div>
+          </div>
+
+          <!-- Show only if user is admin -->
+          <div *ngIf="isAdmin" class="form-group">
+            <select formControlName="selectedStudents" multiple class="form-control">
+              <option disabled selected>Select students</option>
+              <option *ngFor="let student of students" [value]="student._id">{{ student.firstName }}</option>
+            </select>
+          </div>
+
+          <!-- Change button label based on user role -->
+          <div class="form-group">
+            <input type="submit" class="btn btn-primary py-3 px-5" [value]="isAdmin ? 'Add Students' : 'Add Course'">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
