@@ -14,6 +14,17 @@ const path = require("path");
 const app = express();
 
 //************************ App Configuration  ********************/
+function makeid(length) {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+}
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -342,21 +353,59 @@ app.get("/users/:id", (req, res) => {
   );
 });
 // Get Course By ID
-app.get("/courses/:id", async (req, res) => {
-  console.log("Here Into BL: Get Course By ID", req.params.id);
+app.post("/courses/", multer({ storage: storageConfig }).single('img'), async (req, res) => {
+  console.log("Here into BL: Add Course", req.body);
+
   try {
-    const id = req.params.id;
-    const course = await Course.findById(id)
-                                .populate('students')
-                                .populate('teacherID', 'firstName'); // Corrected field name to 'teacherID'
-    if (course) {
-      res.json({ obj: course });
+    // Find the user by ID
+    const userObj = await User.findById(req.body.teacherID);
+
+    if (!userObj) {
+      // User not found
+      return res.status(404).json({ msg: "User Not Found" });
+    }
+
+    if (!req.file) {
+      // No file uploaded
+      return res.status(400).json({ msg: "No image uploaded" });
+    }
+
+    // File uploaded successfully
+    console.log("Uploaded file:", req.file);
+
+    // Create a new Course object
+    const courseObj = new Course({
+      name: req.body.name,
+      description: req.body.description,
+      duration: req.body.duration,
+      teacherID: userObj._id,
+    });
+
+    // Assign the courseimg field if a file is uploaded
+    if (req.file) {
+      const ext = path.extname(req.file.originalname);
+      const filename = req.file.filename.replace(ext, ''); // Remove the extension from the original filename
+      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}-courseimg`;
+      const newFilename = `${filename.replace(/\s+/g, '_')}-${uniqueSuffix}${ext}`; // Replace spaces with underscores
+      courseObj.courseimg = `http://localhost:3000/avatars/${newFilename}`;
+    }
+
+    // Save the course object
+    const savedCourse = await courseObj.save();
+
+    if (savedCourse) {
+      // Course added successfully
+      console.log("Course object before saving:", courseObj);
+      console.log("Saved course:", savedCourse);
+      res.json({ msg: "Course Added With Success" });
     } else {
-      res.status(404).json({ msg: "Course not found" });
+      // Error saving course
+      res.status(500).json({ msg: "Course Not Saved" });
     }
   } catch (error) {
-    console.error("Error fetching course by ID:", error);
-    res.status(500).json({ error: "Internal server error" });
+    // Error in finding user or saving course
+    console.error("Error:", error);
+    res.status(500).json({ msg: "Internal Server Error" });
   }
 });
 app.post("/courses/", multer({ storage: storageConfig }).single('img'), async (req, res) => {
@@ -388,9 +437,12 @@ app.post("/courses/", multer({ storage: storageConfig }).single('img'), async (r
     });
 
     // Assign the courseimg field if a file is uploaded
-    if (req.file) {
-      courseObj.courseimg = `http://localhost:3000/avatars/${req.file.filename}`;
-    }
+    //if (req.file) {
+      //const ext = path.extname(req.file.originalname);
+      //const newFilename=makeid(5)+'.'+ext 
+      //console.log("this is ",newFilename)
+      //courseObj.courseimg = `http://localhost:3000/avatars/${newFilename}`;
+    //}
 
     // Save the course object
     const savedCourse = await courseObj.save();
@@ -410,6 +462,8 @@ app.post("/courses/", multer({ storage: storageConfig }).single('img'), async (r
     res.status(500).json({ msg: "Internal Server Error" });
   }
 });
+
+
 
 
 
