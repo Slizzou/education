@@ -70,7 +70,7 @@ const storageConfig = multer.diskStorage({
 app.use('/avatars', express.static(path.join(__dirname, './uploads')));
 //
 
-app.use('/cvs', express.static(path.join(__dirname, './uploads/cvs')));
+app.use('/cvs', express.static(path.join(__dirname, './uploads')));
 
 const MIME_TYPE = {
   'image/png': 'png',
@@ -143,79 +143,6 @@ app.post("/users/signup", multer({ storage: storageConfig }).fields([{ name: 'im
     });
   }
 });
-
-
-
-
-
-
-
-
-/**** Routes *****/
-// Signup
-app.post("/users/signup", multer({ storage: storageConfig }).fields([{ name: 'img', maxCount: 1 }, { name: 'cv', maxCount: 1 }]), (req, res) => {
-  console.log("Here into Signup ", req.body);
-
-  // Check if the user role is requested teacher
-  if (req.body.role === 'requested_teacher') {
-    // Continue with user registration process for requested teacher
-    User.findOne({ email: req.body.email }).then((doc) => {
-      if (doc) {
-        res.json({ msg: "Email Exists" });
-      } else {
-        bcrypt.hash(req.body.pwd, 10).then((cryptedPwd) => {
-          console.log("Here Crypted Pwd", cryptedPwd);
-          
-          let newUser = {
-            firstName: req.body.firstName,
-            email: req.body.email,
-            lastName: req.body.lastName,
-            pwd: cryptedPwd,
-            phoneNumber: req.body.phoneNumber,
-            role: req.body.role
-          };
-    
-          if (req.files['cv']) {
-            newUser.cv = `http://localhost:3000/cvs/${req.files['cv'][0].filename}`;
-          }
-    
-          let userObj = new User(newUser);
-          userObj.save();
-          res.json({ msg: "User added with success" });
-        });
-      }
-    });
-  } else {
-    // For other roles, proceed with the default registration process
-    User.findOne({ email: req.body.email }).then((doc) => {
-      if (doc) {
-        res.json({ msg: "Email Exists" });
-      } else {
-        bcrypt.hash(req.body.pwd, 10).then((cryptedPwd) => {
-          console.log("Here Crypted Pwd", cryptedPwd);
-          
-          let newUser = {
-            firstName: req.body.firstName,
-            email: req.body.email,
-            lastName: req.body.lastName,
-            pwd: cryptedPwd,
-            phoneNumber: req.body.phoneNumber,
-            role: req.body.role
-          };
-    
-          if (req.files['img']) {
-            newUser.avatar = `http://localhost:3000/avatars/${req.files['img'][0].filename}`;
-          }
-    
-          let userObj = new User(newUser);
-          userObj.save();
-          res.json({ msg: "User added with success" });
-        });
-      }
-    });
-  }
-});
-
 
 app.get("/users", (req, res) => {
   // Business Logic
@@ -353,6 +280,7 @@ app.get("/users/:id", (req, res) => {
   );
 });
 // Get Course By ID
+
 app.post("/courses/", multer({ storage: storageConfig }).single('img'), async (req, res) => {
   console.log("Here into BL: Add Course", req.body);
 
@@ -383,66 +311,12 @@ app.post("/courses/", multer({ storage: storageConfig }).single('img'), async (r
 
     // Assign the courseimg field if a file is uploaded
     if (req.file) {
-      const ext = path.extname(req.file.originalname);
-      const filename = req.file.filename.replace(ext, ''); // Remove the extension from the original filename
-      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}-courseimg`;
-      const newFilename = `${filename.replace(/\s+/g, '_')}-${uniqueSuffix}${ext}`; // Replace spaces with underscores
-      courseObj.courseimg = `http://localhost:3000/avatars/${newFilename}`;
-    }
-
-    // Save the course object
-    const savedCourse = await courseObj.save();
-
-    if (savedCourse) {
-      // Course added successfully
-      console.log("Course object before saving:", courseObj);
-      console.log("Saved course:", savedCourse);
-      res.json({ msg: "Course Added With Success" });
-    } else {
-      // Error saving course
-      res.status(500).json({ msg: "Course Not Saved" });
-    }
-  } catch (error) {
-    // Error in finding user or saving course
-    console.error("Error:", error);
-    res.status(500).json({ msg: "Internal Server Error" });
-  }
-});
-app.post("/courses/", multer({ storage: storageConfig }).single('img'), async (req, res) => {
-  console.log("Here into BL: Add Course", req.body);
-
-  try {
-    // Find the user by ID
-    const userObj = await User.findById(req.body.teacherID);
-
-    if (!userObj) {
-      // User not found
-      return res.status(404).json({ msg: "User Not Found" });
-    }
-
-    if (!req.file) {
-      // No file uploaded
-      return res.status(400).json({ msg: "No image uploaded" });
-    }
-
-    // File uploaded successfully
-    console.log("Uploaded file:", req.file);
-
-    // Create a new Course object
-    const courseObj = new Course({
-      name: req.body.name,
-      description: req.body.description,
-      duration: req.body.duration,
-      teacherID: userObj._id,
-    });
-
-    // Assign the courseimg field if a file is uploaded
-    //if (req.file) {
+      console.log("this is ",req.file)
       //const ext = path.extname(req.file.originalname);
-      //const newFilename=makeid(5)+'.'+ext 
+      //const newFilename=makeid(5)+ext 
       //console.log("this is ",newFilename)
-      //courseObj.courseimg = `http://localhost:3000/avatars/${newFilename}`;
-    //}
+      courseObj.courseimg = `http://localhost:3000/avatars/${req.file.filename}`;
+    }
 
     // Save the course object
     const savedCourse = await courseObj.save();
