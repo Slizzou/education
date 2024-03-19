@@ -12,10 +12,11 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class AddCourseComponent implements OnInit {
   courseform!: FormGroup;
-  userId: string | undefined;
+  userId: any | undefined;
   isAdmin: boolean = false;
   students: any[] = [];
-  courseId: string | null = null;
+  courseId: any | null = null;
+  imgCourse: any | null = null; // Variable to store the course image file
 
   constructor(
     private formBuilder: FormBuilder,
@@ -38,11 +39,13 @@ export class AddCourseComponent implements OnInit {
     if (token) {
       const decodedToken: any = jwtDecode(token);
       this.userId = decodedToken.id;
+      console.log("this is the userId",this.userId)
       this.isAdmin = decodedToken.role === 'admin';
       if (this.isAdmin) {
         this.getAllStudents();
       }
     }
+    
 
     // Get course ID from the route parameters
     this.courseId = this.activatedRoute.snapshot.paramMap.get('id');
@@ -89,7 +92,7 @@ export class AddCourseComponent implements OnInit {
       };
   
       // Call the addCourse method to create a new course
-      this.cService.addCourse(course).subscribe((data) => {
+      this.cService.addCourse(course,this.imgCourse).subscribe((data) => {
         if (data) {
           alert("Course has been added successfully");
           console.log("Here is the added course", data);
@@ -99,4 +102,14 @@ export class AddCourseComponent implements OnInit {
     }
   }
   
+  // Method to handle image selection
+  onImageSelected(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    if (inputElement && inputElement.files && inputElement.files.length > 0) {
+      const file = inputElement.files[0]!;
+      this.imgCourse = file;
+      this.courseform.patchValue({ img: this.imgCourse.path});
+      this.courseform.updateValueAndValidity();
+    }
+  }
 }

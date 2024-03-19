@@ -6,6 +6,7 @@ name:String,
 owner:String,
 description:String,
 duration:Number,
+courseimg:String,
 teacherID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User" //

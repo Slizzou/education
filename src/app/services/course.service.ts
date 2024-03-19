@@ -31,14 +31,29 @@ import { Injectable } from '@angular/core';
       return this.httpClient.delete<{ courses: any , response: string }>(`${this.courseURL}/${id}`);
     }
     //return msg (string)
-    addCourse(m:any){
-    return this.httpClient.post(this.courseURL,m)
-    
-    }
+   
     editCourse(newcourse:any){
       return this.httpClient.put<{response:any}>(this.courseURL,newcourse);
     
     }
-  
+    addCourse(course: any, imgcourse: File) {
+      const formData = new FormData();
+      
+      // Append course image file if provided
+      if (imgcourse) {
+        formData.append("img", imgcourse);
+      }
+    
+      // Append course data
+      formData.append("name", course.name);
+      formData.append("description", course.description);
+      formData.append("teacherID", course.teacherID);
+      formData.append("duration", course.duration);
+      formData.append("students", JSON.stringify(course.students)); // Convert students array to string
+      
+      // Send POST request with FormData containing course data and image
+      return this.httpClient.post<{ isAdded: any }>(this.courseURL,formData);
+    }
+    
 
 }

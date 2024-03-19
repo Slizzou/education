@@ -1,7 +1,6 @@
 <header class="site-navbar py-4" role="banner">
     <!-- Top Bar -->
     
-
     <!-- Header Content -->
     <div class="header_container">
         <div class="container">
@@ -23,32 +22,41 @@
                                 <li *ngIf="isLoggedIN()"><a (click)="logout()" class="nav-link">Logout</a></li>
                                 <div *ngIf="isLoggedIN() && user">
                                     <span>Welcome {{ user.fName }}</span>
-                                  </div>
-                                  <div *ngIf="isLoggedIN() && user">
-
-                                  <img src="{{ user.avatar}}" >
-                                  </div>
-                                  
-                                
-                                <li *ngIf="!isLoggedIN()"  class="dropdown show" >
+                                    <img src="{{ user.avatar}}" >
+                                </div>
+                                <li *ngIf="!isLoggedIN()" class="dropdown show" >
                                     <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
                                         id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
                                         aria-expanded="false">
                                         Signup
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                        <a class="dropdown-item" [routerLink]="'signupteacher'">Become a  teacher</a>
+                                        <a class="dropdown-item" [routerLink]="'signupteacher'">Become a teacher</a>
                                         <a class="dropdown-item" [routerLink]="'signupstudent'">Become a student</a>
                                         <a class="dropdown-item" [routerLink]="'signupparent'">Create your parent account</a>
                                     </div>
                                 </li>
-                                <li class="dropdown show" *ngIf="isLoggedIN() && user.role=='admin'">
+                                <!-- Teacher Dashboard -->
+                                <li class="dropdown show" *ngIf="isLoggedIN() && user.role == 'teacher'">
                                     <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
-                                        id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+                                        id="teacherDashboardLink" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        Teacher Dashboard
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="teacherDashboardLink">
+                                        <a class="dropdown-item" [routerLink]="'addcourse'">Add Course</a>
+                                        <a class="dropdown-item" [routerLink]="'addevaluation'">Add Evaluation</a>
+                                        <a class="dropdown-item" [routerLink]="'teacher'">Teacher</a>
+                                    </div>
+                                </li>
+                                <!-- Admin Dashboard -->
+                                <li class="dropdown show" *ngIf="isLoggedIN() && user.role == 'admin'">
+                                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
+                                        id="adminDashboardLink" data-toggle="dropdown" aria-haspopup="true"
                                         aria-expanded="false">
                                         Admin Dashboard
                                     </a>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <div class="dropdown-menu" aria-labelledby="adminDashboardLink">
                                         <a class="dropdown-item" [routerLink]="'addcourse'">Add Course</a>
                                         <a class="dropdown-item" [routerLink]="'addteacher'">Add teacher</a>
                                         <a class="dropdown-item" [routerLink]="'admin'">Admin</a>
@@ -56,7 +64,6 @@
                                 </li>
                             </ul>
                             <div class="search_button"><i class="fa fa-search" aria-hidden="true"></i></div>
-                            <!-- Hamburger -->
                             <div class="shopping_cart"><i class="fa fa-shopping-cart" aria-hidden="true"></i></div>
                             <div class="hamburger menu_mm">
                                 <i class="fa fa-bars menu_mm" aria-hidden="true"></i>

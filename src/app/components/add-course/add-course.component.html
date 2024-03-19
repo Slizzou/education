@@ -33,7 +33,10 @@
               <option *ngFor="let student of students" [value]="student._id">{{ student.firstName }}</option>
             </select>
           </div>
-
+          <div class="form-group">
+            <label *ngIf="!isAdmin">Select Course Image:</label>
+            <input type="file" (change)="onImageSelected($event)" class="form-control" *ngIf="!isAdmin">
+          </div>
           <!-- Change button label based on user role -->
           <div class="form-group">
             <input type="submit" class="btn btn-primary py-3 px-5" [value]="isAdmin ? 'Add Students' : 'Add Course'">

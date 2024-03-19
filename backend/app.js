@@ -359,6 +359,63 @@ app.get("/courses/:id", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+app.post("/courses/", multer({ storage: storageConfig }).single('img'), async (req, res) => {
+  console.log("Here into BL: Add Course", req.body);
+
+  try {
+    // Find the user by ID
+    const userObj = await User.findById(req.body.teacherID);
+
+    if (!userObj) {
+      // User not found
+      return res.status(404).json({ msg: "User Not Found" });
+    }
+
+    if (!req.file) {
+      // No file uploaded
+      return res.status(400).json({ msg: "No image uploaded" });
+    }
+
+    // File uploaded successfully
+    console.log("Uploaded file:", req.file);
+
+    // Create a new Course object
+    const courseObj = new Course({
+      name: req.body.name,
+      description: req.body.description,
+      duration: req.body.duration,
+      teacherID: userObj._id,
+    });
+
+    // Assign the courseimg field if a file is uploaded
+    if (req.file) {
+      courseObj.courseimg = `http://localhost:3000/avatars/${req.file.filename}`;
+    }
+
+    // Save the course object
+    const savedCourse = await courseObj.save();
+
+    if (savedCourse) {
+      // Course added successfully
+      console.log("Course object before saving:", courseObj);
+      console.log("Saved course:", savedCourse);
+      res.json({ msg: "Course Added With Success" });
+    } else {
+      // Error saving course
+      res.status(500).json({ msg: "Course Not Saved" });
+    }
+  } catch (error) {
+    // Error in finding user or saving course
+    console.error("Error:", error);
+    res.status(500).json({ msg: "Internal Server Error" });
+  }
+});
+
+
+
+
+
+
 
 
 
@@ -386,32 +443,8 @@ app.put("/teachers/", (request, response) => {
     });
 });
 // Add a new course
-app.post("/courses/", (req, res) => {
-  console.log("Here into BL: Add Course", req.body);
 
-  // Assuming you have a User model and a Course model defined
 
-  // Find the user by ID
-  User.findById(req.body.teacherID).then((userObj) => {
-    if (userObj) {
-      let courseObj = new Course(req.body); // Assuming Course model is defined
-
-      // Set the user ID for the course
-      courseObj.teacherID = userObj._id;
-
-      courseObj.save((err, doc) => {
-        if (doc) {
-          res.json({ msg: "Course Added With Success" });
-        } else {
-          // Error
-          res.json({ msg: "Course Not Saved" });
-        }
-      });
-    } else {
-      res.json({ msg: "User Not Found" });
-    }
-  });
-});
 
 app.delete("/courses/:id", (request, response) => {
   const courseID = request.params.id;
