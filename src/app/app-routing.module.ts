@@ -9,6 +9,8 @@ import { AddCourseComponent } from './components/add-course/add-course.component
 import { AddTeacherComponent } from './components/add-teacher/add-teacher.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { CourseinfoComponent } from './components/courseinfo/courseinfo.component';
+import { TeacherdashboardComponent } from './components/teacherdashboard/teacherdashboard.component';
+
 
 
 const routes: Routes = [
@@ -30,7 +32,10 @@ const routes: Routes = [
 
 {path:"addcourse",component:AddCourseComponent},
 {path:"addteacher",component:AddTeacherComponent},
-{path:"admin",component:AdminComponent}
+{path:"admin",component:AdminComponent},
+{path:"teacherdashboard",component:TeacherdashboardComponent}
+
+
 
 
 

@@ -120,7 +120,7 @@ app.post("/users/signup", multer({ storage: storageConfig }).fields([{ name: 'im
         res.json({ msg: "Email Exists" });
       } else {
         bcrypt.hash(req.body.pwd, 10).then((cryptedPwd) => {
-          console.log("Here Crypted Pwd", cryptedPwd);
+          console.log("Here Crypted Pwd", cryptedPwd); 
           
           let newUser = {
             firstName: req.body.firstName,
@@ -146,7 +146,7 @@ app.post("/users/signup", multer({ storage: storageConfig }).fields([{ name: 'im
 
 app.get("/users", (req, res) => {
   // Business Logic
-  console.log("here into BL: Get All players");
+  console.log("here into BL: Get All users");
 
   User.find().then(
     (docs) => {
@@ -279,7 +279,50 @@ app.get("/users/:id", (req, res) => {
 
   );
 });
+
 // Get Course By ID
+
+
+app.get("/courses/:id", (req, res) => {
+  console.log("Here Into BL : Get Course By ID", req.params.id);
+  let id = req.params.id;
+  Course.findById(id).then(
+
+    (doc) => {
+
+      if (doc) {
+        res.json({ obj: doc });
+
+      } else {
+        res.json({ msg: "Not Found" });
+      }
+
+
+    }
+
+  );
+});
+
+
+//Get Courses By teacherId
+app.get("/courses/teacher/:teacherId", (req, res) => {
+  console.log("Here Into BL : Get Courses By Teacher ID", req.params.teacherId);
+  let teacherId = req.params.teacherId;
+
+  // Find courses by teacher ID
+  Course.find({ teacherID: teacherId }).then(
+    (docs) => {
+      if (docs && docs.length > 0) {
+        res.json({ courses: docs });
+      } else {
+        res.json({ msg: "No courses found for this teacher" });
+      }
+    }
+  ).catch((err) => {
+    console.error("Error fetching courses:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  });
+});
 
 app.post("/courses/", multer({ storage: storageConfig }).single('img'), async (req, res) => {
   console.log("Here into BL: Add Course", req.body);
@@ -411,7 +454,19 @@ app.put("/courses/", (request, response) => {
   });
 });
 
-
+//Edit User 
+app.put("/users/", (request, response) => {
+  let user = request.body;
+  console.log("Here is the user ",user);
+  User.updateOne({ _id: user._id }, request.body).then((updateResponse) => {
+    console.log("Here Update response", updateResponse);
+    if (updateResponse.nModified == 1) {
+      response.json({ response: true });
+    } else {
+      response.json({ response: false });
+    }
+  });
+});
 //http://localhost:3000/avatars/165__1620012335821_254996629_large-1710680234386-428277213-img.jpg"
 //C:\Users\Salim\Desktop\Education\learnify\backend\uploads\165__1620012335821_254996629_large-1710680234386-428277213-img.jpg
 /************* Export Application ****************/

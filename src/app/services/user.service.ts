@@ -95,7 +95,9 @@ export class UserService {
   }
   
 
-
+  updateStudentCourseId(studentId: any, courseId: any) {
+    return this.http.put<{ obj: any, msg: any }>(`${this.userUrl}/${studentId}/course`, { courseId });
+  }
 }
 
 

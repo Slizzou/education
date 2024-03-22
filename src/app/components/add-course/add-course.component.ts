@@ -55,11 +55,17 @@ export class AddCourseComponent implements OnInit {
     this.uService.getAllStudents().subscribe((response) => {
       this.students = response.students;
     });
+    
   }
+
 
   addCourse() {
     const courseFormValue = this.courseform.value;
   
+    // Extract selected student IDs
+    const selectedStudentIds = courseFormValue.selectedStudents
+    console.log("Selected student IDs:", selectedStudentIds);
+
     // Check if the user is an admin
     if (this.isAdmin) {
       // Editing an existing course
@@ -69,7 +75,7 @@ export class AddCourseComponent implements OnInit {
         description: courseFormValue.description,
         duration: courseFormValue.duration,
         teacherID: this.userId,
-        students: courseFormValue.selectedStudents
+        students: courseFormValue.selectedStudents // No need to include selectedStudentIds
       };
   
       // Call the editCourse method to update the existing course
@@ -78,6 +84,7 @@ export class AddCourseComponent implements OnInit {
           console.log("Updated course with students", course.students);
           alert("Course has been updated successfully");
           console.log("Here is the updated course", data);
+          this.assignCourseToStudents(selectedStudentIds, this.courseId); // Assign course to students
           this.router.navigate(['']);
         }
       });
@@ -88,11 +95,11 @@ export class AddCourseComponent implements OnInit {
         description: courseFormValue.description,
         duration: courseFormValue.duration,
         teacherID: this.userId,
-        students: [] // No students added when creating a new course
+        students: courseFormValue.selectedStudents // No need to include selectedStudentIds
       };
   
       // Call the addCourse method to create a new course
-      this.cService.addCourse(course,this.imgCourse).subscribe((data) => {
+      this.cService.addCourse(course, this.imgCourse).subscribe((data) => {
         if (data) {
           alert("Course has been added successfully");
           console.log("Here is the added course", data);
@@ -102,6 +109,19 @@ export class AddCourseComponent implements OnInit {
     }
   }
   
+  assignCourseToStudents(studentIds: string[], courseId: string) {
+    studentIds.forEach(studentId => {
+      this.uService.getUserById(studentId).subscribe((userData) => {
+        const user = userData.obj;
+        if (user && user.courseID !== courseId) {
+          user.courseID = courseId;
+          this.uService.editUser(user).subscribe(() => {
+            console.log(`Course ${courseId} assigned to student ${studentId}`);
+          });
+        }
+      });
+    });
+  }
   // Method to handle image selection
   onImageSelected(event: Event) {
     const inputElement = event.target as HTMLInputElement;

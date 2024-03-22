@@ -28,6 +28,10 @@ import { HttpClientModule } from "@angular/common/http"
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AllusersComponent } from './components/allusers/allusers.component';
 import { CourseinfoComponent } from './components/courseinfo/courseinfo.component';
+import { AddevaluationComponent } from './components/addevaluation/addevaluation.component';
+import { TeacherdashboardComponent } from './components/teacherdashboard/teacherdashboard.component';
+import { StudentsTableComponent } from './components/students-table/students-table.component';
+import { TeachercoursesComponent } from './components/teachercourses/teachercourses.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +59,10 @@ import { CourseinfoComponent } from './components/courseinfo/courseinfo.componen
     CoursesTableComponent,
     AllusersComponent,
     CourseinfoComponent,
+    AddevaluationComponent,
+    TeacherdashboardComponent,
+    StudentsTableComponent,
+    TeachercoursesComponent,
 
   ],
   imports: [
