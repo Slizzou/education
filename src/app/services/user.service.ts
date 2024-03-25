@@ -93,6 +93,9 @@ export class UserService {
 
 
   }
+  getStudentsByTeacherId(teacherId: any) {
+    return this.http.get<{ students: any }>(`${this.userUrl}/teacher/${teacherId}`);
+  }
   
 
   updateStudentCourseId(studentId: any, courseId: any) {

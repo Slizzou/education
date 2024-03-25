@@ -63,30 +63,34 @@ export class AddCourseComponent implements OnInit {
     const courseFormValue = this.courseform.value;
   
     // Extract selected student IDs
-    const selectedStudentIds = courseFormValue.selectedStudents
-    console.log("Selected student IDs:", selectedStudentIds);
-
+    const selectedStudentIds = courseFormValue.selectedStudents;
+  
     // Check if the user is an admin
     if (this.isAdmin) {
-      // Editing an existing course
-      const course = {
-        id: this.courseId, // Use the obtained course ID
-        name: courseFormValue.name,
-        description: courseFormValue.description,
-        duration: courseFormValue.duration,
-        teacherID: this.userId,
-        students: courseFormValue.selectedStudents // No need to include selectedStudentIds
-      };
+      // Retrieve the existing teacherID before updating
+      this.cService.getCourseById(this.courseId).subscribe((courseData) => {
+        const existingTeacherId = courseData.obj.teacherID;
   
-      // Call the editCourse method to update the existing course
-      this.cService.editCourse(course).subscribe((data) => {
-        if (data) {
-          console.log("Updated course with students", course.students);
-          alert("Course has been updated successfully");
-          console.log("Here is the updated course", data);
-          this.assignCourseToStudents(selectedStudentIds, this.courseId); // Assign course to students
-          this.router.navigate(['']);
-        }
+        // Editing an existing course
+        const course = {
+          id: this.courseId, // Use the obtained course ID
+          name: courseFormValue.name,
+          description: courseFormValue.description,
+          duration: courseFormValue.duration,
+          teacherID: existingTeacherId, // Use the existing teacherID
+          students: courseFormValue.selectedStudents // No need to include selectedStudentIds
+        };
+  
+        // Call the editCourse method to update the existing course
+        this.cService.editCourse(course).subscribe((data) => {
+          if (data) {
+            console.log("Updated course with students", course.students);
+            alert("Course has been updated successfully");
+            console.log("Here is the updated course", data);
+            this.assignCourseToStudents(selectedStudentIds, this.courseId); // Assign course to students
+            this.router.navigate(['']);
+          }
+        });
       });
     } else {
       // Adding a new course
@@ -108,6 +112,7 @@ export class AddCourseComponent implements OnInit {
       });
     }
   }
+  
   
   assignCourseToStudents(studentIds: string[], courseId: string) {
     studentIds.forEach(studentId => {

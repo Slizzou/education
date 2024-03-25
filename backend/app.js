@@ -49,6 +49,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /******** Models Importations *****************/
 const User = require("./models/user");
 const Course = require("./models/course");
+const Feedback = require("./models/feedback");
+
 
 /******** Business Logic *****************/
 
@@ -306,23 +308,31 @@ app.get("/courses/:id", (req, res) => {
 
 //Get Courses By teacherId
 app.get("/courses/teacher/:teacherId", (req, res) => {
-  console.log("Here Into BL : Get Courses By Teacher ID", req.params.teacherId);
-  let teacherId = req.params.teacherId;
+  console.log("Here Into BL: Get Courses and Students By Teacher ID", req.params.teacherId);
+  const teacherId = req.params.teacherId;
 
   // Find courses by teacher ID
-  Course.find({ teacherID: teacherId }).then(
-    (docs) => {
-      if (docs && docs.length > 0) {
-        res.json({ courses: docs });
+  Course.find({ teacherID: teacherId })
+    .populate('students') // Populate the 'students' field to get the actual student data
+    .then(courses => {
+      if (courses && courses.length > 0) {
+        res.json({ courses: courses });
       } else {
         res.json({ msg: "No courses found for this teacher" });
       }
-    }
-  ).catch((err) => {
-    console.error("Error fetching courses:", err);
-    res.status(500).json({ error: "Internal Server Error" });
-  });
+    })
+    .catch(err => {
+      console.error("Error fetching courses:", err);
+      res.status(500).json({ error: "Internal Server Error" });
+    });
 });
+
+
+//Get Students By teacherId
+// Get Students By Teacher ID
+// Get Students By Teacher ID
+
+
 
 app.post("/courses/", multer({ storage: storageConfig }).single('img'), async (req, res) => {
   console.log("Here into BL: Add Course", req.body);
@@ -467,6 +477,43 @@ app.put("/users/", (request, response) => {
     }
   });
 });
+app.post("/evaluations", async (req, res) => {
+  console.log("Here into BL: Add Evaluation", req.body);
+
+  try {
+    // Find the student by ID
+    const student = await User.findById(req.body.studentID);
+
+    if (!student) {
+      // Student not found
+      return res.status(404).json({ msg: "Student Not Found" });
+    }
+
+    // Create a new Feedback (Evaluation) object
+    const feedback = new Feedback({
+      notes: req.body.notes,
+      evaluation: req.body.evaluation,
+      studentID: req.body.studentID
+    });
+
+    // Save the feedback (evaluation) object
+    const savedFeedback = await feedback.save();
+
+    if (savedFeedback) {
+      // Evaluation added successfully
+      console.log("Saved feedback (evaluation):", savedFeedback);
+      res.json({ msg: "Evaluation Added With Success" });
+    } else {
+      // Error saving feedback (evaluation)
+      res.status(500).json({ msg: "Evaluation Not Saved" });
+    }
+  } catch (error) {
+    // Error in finding student or saving evaluation
+    console.error("Error:", error);
+    res.status(500).json({ msg: "Internal Server Error" });
+  }
+});
+
 //http://localhost:3000/avatars/165__1620012335821_254996629_large-1710680234386-428277213-img.jpg"
 //C:\Users\Salim\Desktop\Education\learnify\backend\uploads\165__1620012335821_254996629_large-1710680234386-428277213-img.jpg
 /************* Export Application ****************/

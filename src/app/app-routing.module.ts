@@ -10,6 +10,7 @@ import { AddTeacherComponent } from './components/add-teacher/add-teacher.compon
 import { AdminComponent } from './components/admin/admin.component';
 import { CourseinfoComponent } from './components/courseinfo/courseinfo.component';
 import { TeacherdashboardComponent } from './components/teacherdashboard/teacherdashboard.component';
+import { AddevaluationComponent } from './components/addevaluation/addevaluation.component';
 
 
 
@@ -24,6 +25,8 @@ const routes: Routes = [
 {path:"signupteacher",component:SignupComponent},
 {path:"editCourse/:id",component:AddCourseComponent},
 {path:"courseInfo/:id",component:CourseinfoComponent},
+{path:"addeval/:id",component:AddevaluationComponent},
+
 
 
 
