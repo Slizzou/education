@@ -2,7 +2,7 @@
 const mongoose = require("mongoose")
 //Create User Schema 
 const feedbackSchema = mongoose.Schema({
-    notes: Number,
+    note: Number,
     evaluation:String,
     teacherID: {
         type: mongoose.Schema.Types.ObjectId,

@@ -1,4 +1,4 @@
-<div class="course_col">
+<div *ngIf="course" class="course_col">
   <div class="course col-lg-6">
     <div class="course_body">
       <h3 class="course_title"><a href="course.html">{{ course.name }}</a></h3>
@@ -12,9 +12,9 @@
         <div class="course_info">
           <i class="fa fa-graduation-cap" aria-hidden="true"></i>
           <span>
-            Enrolled Students:
+            Enrolled Students: 
             <span *ngIf="course.students && course.students.length > 0">
-              <span *ngFor="let student of course.students">{{ student?.firstName }}</span>
+              <span *ngFor="let student of course.students">{{ student?.firstName }} </span>
             </span>
             <span *ngIf="!course.students || course.students.length === 0">No students enrolled</span>
           </span>
@@ -22,6 +22,9 @@
         <div class="course_rating">
           <i class="fa fa-star" aria-hidden="true"></i>
           <!-- Add your course rating display here -->
+        </div>
+        <div *ngIf="course.courseimg">
+          <img [src]="course.courseimg" alt="Course Image" class="course_img">
         </div>
       </div>
     </div>

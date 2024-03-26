@@ -8,8 +8,12 @@
       aria-selected="true"><i class="fa fa-users"></i> My Courses</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
       aria-selected="false"><i class="fa fa-book"></i> My students</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="evals-tab" data-toggle="tab" href="#evals" role="tab" aria-controls="evals"
+      aria-selected="false"><i class="fa fa-book"></i> My Evals</a>
   </li>
 </ul>
 
@@ -18,8 +22,12 @@
     <!-- This will show content for "My Courses" -->
     <app-teachercourses></app-teachercourses>
   </div>
-  <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
     <!-- This will show content for "My students" -->
     <app-students-table></app-students-table>
+  </div>
+  <div class="tab-pane fade" id="evals" role="tabpanel" aria-labelledby="evals-tab">
+    <!-- This will show content for "My Evals" -->
+    <app-evaltable></app-evaltable>
   </div>
 </div>

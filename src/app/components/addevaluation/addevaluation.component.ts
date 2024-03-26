@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { courseService } from 'src/app/services/course.service';
 import { FeedbackService } from 'src/app/services/feedback.service';
 import { UserService } from 'src/app/services/user.service';
+import { jwtDecode } from 'jwt-decode'; // Import jwt_decode library
 
 @Component({
   selector: 'app-addevaluation',
@@ -15,6 +16,7 @@ export class AddevaluationComponent implements OnInit {
   evaluationform!: FormGroup;
   studentId: any | null;
   courses: any[] = [];
+  teacherId: any; // Variable to store teacher ID
 
   constructor(
     private formBuilder: FormBuilder,
@@ -25,10 +27,27 @@ export class AddevaluationComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Initialize the form group
+    this.evaluationform = this.formBuilder.group({
+      note: [''], // Initialize note field
+      evaluation: [''],
+      courseId: ['']
+    });
+
     // Extract student ID from the route parameters
     this.studentId = this.activatedRoute.snapshot.paramMap.get('id');
     if (!this.studentId) {
       console.error("Student ID not found");
+      return;
+    }
+
+    // Retrieve teacher ID from token
+    const token = sessionStorage.getItem('token');
+    if (token) {
+      const decodedToken: any = jwtDecode(token);
+      this.teacherId = decodedToken.id;
+    } else {
+      console.error("Token not found");
       return;
     }
 
@@ -39,12 +58,6 @@ export class AddevaluationComponent implements OnInit {
         console.log("Course:", course);
         this.courses.push(course); // Assuming the course object contains necessary data
       });
-    });
-
-    this.evaluationform = this.formBuilder.group({
-      note: [''],
-      evaluation: [''],
-      courseId: [''] // Initialize courseId control
     });
   }
 
@@ -63,14 +76,13 @@ export class AddevaluationComponent implements OnInit {
       return;
     }
   
-    const teacherID = selectedCourse.teacherID; // Extract teacherID from the course
-  
+    // Include teacherID in the evaluation
     const evaluation = {
       note: evaluationData.note,
       evaluation: evaluationData.evaluation,
       studentID: this.studentId,
       courseID: selectedCourseId,
-      teacherID: teacherID._id// Include teacherID in the evaluation
+      teacherID: this.teacherId
     };
   
     // Call the feedback service to add the evaluation
@@ -84,10 +96,6 @@ export class AddevaluationComponent implements OnInit {
       }
     });
   }
-  
-  
-
-  // Define selectCourse method
   selectCourse(event: Event) {
     const courseId = (event.target as HTMLSelectElement).value;
     console.log('Selected Course ID:', courseId);
@@ -100,3 +108,4 @@ export class AddevaluationComponent implements OnInit {
     });
   }
 }
+

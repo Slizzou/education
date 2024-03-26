@@ -31,12 +31,8 @@ export class StudentsTableComponent implements OnInit {
   }
 
   goToAddEval(courseId: any) {
-    // Pass the token as a query parameter when navigating
-    const token = sessionStorage.getItem('token');
-    if (token) {
-      this.router.navigate([`addeval/${courseId}`], { queryParams: { token } });
-    } else {
-      console.error("Token not found");
+    
+      this.router.navigate([`addeval/${courseId}`])
     }
   }
-}
+

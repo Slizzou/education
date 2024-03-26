@@ -221,7 +221,7 @@ app.get("/courses", (req, res) => {
 app.get("/evaluations", async (req, res) => {
   try {
     console.log("Here into BL: Get All evaluations");
-    const evaluations = await Feedback.find().populate('courseID').populate('studentID').maxTimeMS(5000);
+    const evaluations = await Feedback.find().populate('courseID').populate('studentID').populate('teacherID').maxTimeMS(5000);
     console.log("Here all Evaluations:", evaluations);
     res.json({ evaluations: evaluations });
   } catch (err) {
@@ -297,7 +297,7 @@ app.get("/users/:id", (req, res) => {
 app.get("/courses/:id", (req, res) => {
   console.log("Here Into BL : Get Course By ID", req.params.id);
   let id = req.params.id;
-  Course.findById(id).then(
+  Course.findById(id).populate("teacherID").populate("students").then(
 
     (doc) => {
 
@@ -345,7 +345,7 @@ app.get("/courses/student/:studentId", (req, res) => {
 
   // Find courses by student ID
   Course.find({ students: studentId }) // Assuming 'students' field contains student IDs
-    .populate('teacherID') // Populate the 'teacherID' field to get the actual teacher data
+    .populate('teachsterID') // Populate the 'teacherID' field to get the actual teacher data
     .then(courses => {
       if (courses && courses.length > 0) {
         res.json({ courses: courses });
@@ -358,7 +358,43 @@ app.get("/courses/student/:studentId", (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     });
 });
+//Get Evaluation by StudentID
 
+app.get("/evaluations/student/:studentId", async (req, res) => {
+  console.log("Here Into BL: Get Evaluations By Student ID", req.params.studentId);
+  const studentId = req.params.studentId;
+
+  try {
+    const evaluations = await Feedback.find({ studentID: studentId }).populate("teacherID").populate("studentID").populate("courseID");
+    if (evaluations && evaluations.length > 0) {
+      res.json({ evaluations: evaluations });
+    } else {
+      res.json({ msg: "No evaluations found for this student" });
+    }
+  } catch (err) {
+    console.error("Error fetching evaluations:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+// Get evaluations by teacher ID
+app.get("/evaluations/teacher/:teacherId", async (req, res) => {
+  console.log("Here Into BL: Get Evaluations By Teacher ID", req.params.teacherId);
+  const teacherId = req.params.teacherId;
+
+  try {
+    const evaluations = await Feedback.find({ teacherID: teacherId }).populate("teacherID").populate("studentID").populate("courseID");;
+    if (evaluations && evaluations.length > 0) {
+      res.json({ evaluations: evaluations });
+    } else {
+      res.json({ msg: "No evaluations found for this teacher" });
+    }
+  } catch (err) {
+    console.error("Error fetching evaluations:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 
 
@@ -499,7 +535,7 @@ app.put("/users/", (request, response) => {
 
 app.post("/evaluations", async (req, res) => {
   console.log("Here into BL: Add Evaluation", req.body);
-
+  console.log("here is your note ",req.body.note)
   try {
     // Find the student by ID
     const student = await User.findById(req.body.studentID);
@@ -511,7 +547,7 @@ app.post("/evaluations", async (req, res) => {
 
     // Create a new Feedback (Evaluation) object
     const feedback = new Feedback({
-      notes: req.body.notes,
+      note:req.body.note,
       evaluation: req.body.evaluation,
       studentID: req.body.studentID,
       courseID: req.body.courseID,

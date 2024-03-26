@@ -5,17 +5,23 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class FeedbackService {
-  evalUrl: string = "http://localhost:3000/evaluations";
+  private evalUrl: string = "http://localhost:3000/evaluations";
 
-  constructor(private http:HttpClient) { }
-  addEvaluation(evaluationData: any){
-    return this.http.post<{msg:any}>(this.evalUrl,evaluationData);
+  constructor(private http: HttpClient) { }
+
+  addEvaluation(evaluationData: any) {
+    return this.http.post<{ msg: any }>(this.evalUrl, evaluationData);
   }
+
   getEvalById(id: any) {
+    return this.http.get<{ obj: any, msg: any }>(`${this.evalUrl}/${id}`);
+  }
 
-    return this.http.get<{ obj: any ,msg:any}>(`${this.evalUrl}/${id}`)
-    //Return this.httpClient.get(this.matchURL + "/" + id);
+  getEvaluationsByStudentId(studentId: any) {
+    return this.http.get<{ evaluations: any[], msg: any }>(`http://localhost:3000/evaluations/student/${studentId}`);
+  }
 
-
+  getEvaluationsByTeacherId(teacherId: any) {
+    return this.http.get<{ evaluations: any[], msg: any }>(`http://localhost:3000/evaluations/teacher/${teacherId}`);
   }
 }
