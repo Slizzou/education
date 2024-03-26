@@ -32,6 +32,7 @@ import { AddevaluationComponent } from './components/addevaluation/addevaluation
 import { TeacherdashboardComponent } from './components/teacherdashboard/teacherdashboard.component';
 import { StudentsTableComponent } from './components/students-table/students-table.component';
 import { TeachercoursesComponent } from './components/teachercourses/teachercourses.component';
+import { EvaltableComponent } from './components/evaltable/evaltable.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { TeachercoursesComponent } from './components/teachercourses/teachercour
     TeacherdashboardComponent,
     StudentsTableComponent,
     TeachercoursesComponent,
+    EvaltableComponent,
 
   ],
   imports: [

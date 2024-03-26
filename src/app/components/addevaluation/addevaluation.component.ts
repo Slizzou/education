@@ -53,16 +53,26 @@ export class AddevaluationComponent implements OnInit {
       console.error("Student ID not found");
       return;
     }
-
+  
     const evaluationData = this.evaluationform.value;
-
+    const selectedCourseId = evaluationData.courseId;
+    const selectedCourse = this.courses.find(course => course._id === selectedCourseId);
+  
+    if (!selectedCourse) {
+      console.error("Selected course not found");
+      return;
+    }
+  
+    const teacherID = selectedCourse.teacherID; // Extract teacherID from the course
+  
     const evaluation = {
       note: evaluationData.note,
       evaluation: evaluationData.evaluation,
       studentID: this.studentId,
-      courseID: evaluationData.courseId // Include selected course ID
+      courseID: selectedCourseId,
+      teacherID: teacherID._id// Include teacherID in the evaluation
     };
-
+  
     // Call the feedback service to add the evaluation
     this.feedbackService.addEvaluation(evaluation).subscribe((data) => {
       if (data.msg === "Evaluation Added With Success") {
@@ -74,6 +84,8 @@ export class AddevaluationComponent implements OnInit {
       }
     });
   }
+  
+  
 
   // Define selectCourse method
   selectCourse(event: Event) {

@@ -14,17 +14,7 @@ const path = require("path");
 const app = express();
 
 //************************ App Configuration  ********************/
-function makeid(length) {
-  let result = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const charactersLength = characters.length;
-  let counter = 0;
-  while (counter < length) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    counter += 1;
-  }
-  return result;
-}
+
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -95,7 +85,7 @@ app.post("/users/signup", multer({ storage: storageConfig }).fields([{ name: 'im
       } else {
         bcrypt.hash(req.body.pwd, 10).then((cryptedPwd) => {
           console.log("Here Crypted Pwd", cryptedPwd);
-          
+
           let newUser = {
             firstName: req.body.firstName,
             email: req.body.email,
@@ -104,11 +94,11 @@ app.post("/users/signup", multer({ storage: storageConfig }).fields([{ name: 'im
             phoneNumber: req.body.phoneNumber,
             role: req.body.role
           };
-    
+
           if (req.files['cv']) {
             newUser.cv = `http://localhost:3000/cvs/${req.files['cv'][0].filename}`;
           }
-    
+
           let userObj = new User(newUser);
           userObj.save();
           res.json({ msg: "User added with success" });
@@ -122,8 +112,8 @@ app.post("/users/signup", multer({ storage: storageConfig }).fields([{ name: 'im
         res.json({ msg: "Email Exists" });
       } else {
         bcrypt.hash(req.body.pwd, 10).then((cryptedPwd) => {
-          console.log("Here Crypted Pwd", cryptedPwd); 
-          
+          console.log("Here Crypted Pwd", cryptedPwd);
+
           let newUser = {
             firstName: req.body.firstName,
             email: req.body.email,
@@ -132,11 +122,11 @@ app.post("/users/signup", multer({ storage: storageConfig }).fields([{ name: 'im
             phoneNumber: req.body.phoneNumber,
             role: req.body.role
           };
-    
+
           if (req.files['img']) {
             newUser.avatar = `http://localhost:3000/avatars/${req.files['img'][0].filename}`;
           }
-    
+
           let userObj = new User(newUser);
           userObj.save();
           res.json({ msg: "User added with success" });
@@ -187,7 +177,7 @@ app.get("/getallteachers", async (req, res) => {
   try {
     console.log("Here into BL: Get All teachers");
     // Updated the role array to include both 'teacher' and 'requested_teacher'
-    const teachers = await User.find({ role: { $in: ['teacher', 'requested_teacher'] }}).populate('courseID').maxTimeMS(5000);
+    const teachers = await User.find({ role: { $in: ['teacher', 'requested_teacher'] } }).populate('courseID').maxTimeMS(5000);
     console.log("Here all teachers:", teachers);
     // Returning the teachers as JSON
     res.json({ teachers: teachers });
@@ -227,6 +217,23 @@ app.get("/courses", (req, res) => {
   )
 
 });
+// Get all evaluations
+app.get("/evaluations", async (req, res) => {
+  try {
+    console.log("Here into BL: Get All evaluations");
+    const evaluations = await Feedback.find().populate('courseID').populate('studentID').maxTimeMS(5000);
+    console.log("Here all Evaluations:", evaluations);
+    res.json({ evaluations: evaluations });
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+
+
+
 // User login
 app.post("/users/login/", (req, res) => {
   console.log("Here Into BL:Login", req.body);
@@ -247,8 +254,8 @@ app.post("/users/login/", (req, res) => {
             fName: doc.firstName,
             lName: doc.lastName,
             id: doc._id,
-            avatar:doc.avatar,
-            cv:doc.cv,
+            avatar: doc.avatar,
+            cv: doc.cv,
           }
             ,
 
@@ -328,7 +335,10 @@ app.get("/courses/teacher/:teacherId", (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     });
 });
+
+
 //Get Courses by studentID
+
 app.get("/courses/student/:studentId", (req, res) => {
   console.log("Here Into BL: Get Courses By Student ID", req.params.studentId);
   const studentId = req.params.studentId;
@@ -350,9 +360,6 @@ app.get("/courses/student/:studentId", (req, res) => {
 });
 
 
-//Get Students By teacherId
-// Get Students By Teacher ID
-// Get Students By Teacher ID
 
 
 
@@ -386,7 +393,7 @@ app.post("/courses/", multer({ storage: storageConfig }).single('img'), async (r
 
     // Assign the courseimg field if a file is uploaded
     if (req.file) {
-      console.log("this is ",req.file)
+      console.log("this is ", req.file)
       //const ext = path.extname(req.file.originalname);
       //const newFilename=makeid(5)+ext 
       //console.log("this is ",newFilename)
@@ -412,22 +419,11 @@ app.post("/courses/", multer({ storage: storageConfig }).single('img'), async (r
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-
 // Update user role to teacher
 app.put("/teachers/", (request, response) => {
-  console.log('here is the object',request.body)
-  const  id = request.body._id;
-  
+  console.log('here is the object', request.body)
+  const id = request.body._id;
+
   // Extract id and role from request body
   // Use findOneAndUpdate to update user role based on id value
   User.findByIdAndUpdate(id, { role: 'teacher' }, { new: true, useFindAndModify: false }) // Add useFindAndModify: false option
@@ -445,9 +441,8 @@ app.put("/teachers/", (request, response) => {
       response.status(500).json({ success: false, message: "Internal Server Error" });
     });
 });
-// Add a new course
 
-
+//Delete courseById
 
 app.delete("/courses/:id", (request, response) => {
   const courseID = request.params.id;
@@ -474,7 +469,7 @@ app.delete("/courses/:id", (request, response) => {
 // Edit Course
 app.put("/courses/", (request, response) => {
   let course = request.body;
-  console.log("Here is the course ",course);
+  console.log("Here is the course ", course);
   const id = course.id;
   Course.updateOne({ _id: course.id }, request.body).then((updateResponse) => {
     console.log("Here Update response", updateResponse);
@@ -489,7 +484,7 @@ app.put("/courses/", (request, response) => {
 //Edit User 
 app.put("/users/", (request, response) => {
   let user = request.body;
-  console.log("Here is the user ",user);
+  console.log("Here is the user ", user);
   User.updateOne({ _id: user._id }, request.body).then((updateResponse) => {
     console.log("Here Update response", updateResponse);
     if (updateResponse.nModified == 1) {
@@ -499,6 +494,9 @@ app.put("/users/", (request, response) => {
     }
   });
 });
+
+//Add evaluation
+
 app.post("/evaluations", async (req, res) => {
   console.log("Here into BL: Add Evaluation", req.body);
 
@@ -516,7 +514,8 @@ app.post("/evaluations", async (req, res) => {
       notes: req.body.notes,
       evaluation: req.body.evaluation,
       studentID: req.body.studentID,
-      courseID:req.body.courseID,
+      courseID: req.body.courseID,
+      teacherID: req.body.teacherID,
     });
 
     // Save the feedback (evaluation) object
@@ -536,6 +535,13 @@ app.post("/evaluations", async (req, res) => {
     res.status(500).json({ msg: "Internal Server Error" });
   }
 });
+
+//Get all evaluations
+
+
+
+
+
 
 //http://localhost:3000/avatars/165__1620012335821_254996629_large-1710680234386-428277213-img.jpg"
 //C:\Users\Salim\Desktop\Education\learnify\backend\uploads\165__1620012335821_254996629_large-1710680234386-428277213-img.jpg

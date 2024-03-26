@@ -19,10 +19,9 @@ export class StudentsTableComponent implements OnInit {
     const token = sessionStorage.getItem('token');
     if (token) {
       const decodedToken: any = jwtDecode(token);
-const userId = decodedToken.id; // Accessing the 'id' attribute using dot notation
-console.log(userId); // Output the user ID to the console
+      const userId = decodedToken.id; // Accessing the 'id' attribute using dot notation
+      console.log(userId); // Output the user ID to the console
 
-       let user = jwtDecode (token)
       // Fetch courses related to the teacher ID
       this.cService.getCourseByTeacherId(userId).subscribe((response) => {
         console.log('Courses related to the teacher:', response);
@@ -30,10 +29,14 @@ console.log(userId); // Output the user ID to the console
       });
     }
   }
-  goToAddEval(x:any){
-    this.router.navigate([`addeval/${x}`]);
+
+  goToAddEval(courseId: any) {
+    // Pass the token as a query parameter when navigating
+    const token = sessionStorage.getItem('token');
+    if (token) {
+      this.router.navigate([`addeval/${courseId}`], { queryParams: { token } });
+    } else {
+      console.error("Token not found");
+    }
   }
-
-
-
 }
