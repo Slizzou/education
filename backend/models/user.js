@@ -15,9 +15,11 @@ const userSchema = mongoose.Schema({
         ref: "Course" 
       },
      
+      
+     
       feedbacks: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Feedback" // References the Team model
+        ref: "Feedback" // References the  model
       }],
 
 });

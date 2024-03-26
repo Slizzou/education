@@ -186,8 +186,8 @@ app.delete("/users/:id", (request, response) => {
 app.get("/getallteachers", async (req, res) => {
   try {
     console.log("Here into BL: Get All teachers");
-    // Updated the role array to include both 'teacher' and 'request_teacher'
-    const teachers = await User.find({ role: { $in: ['teacher', 'requested_teacher'] }}).maxTimeMS(5000);
+    // Updated the role array to include both 'teacher' and 'requested_teacher'
+    const teachers = await User.find({ role: { $in: ['teacher', 'requested_teacher'] }}).populate('courseID').maxTimeMS(5000);
     console.log("Here all teachers:", teachers);
     // Returning the teachers as JSON
     res.json({ teachers: teachers });
@@ -197,11 +197,12 @@ app.get("/getallteachers", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 // Get all students
 app.get("/getallstudents", async (req, res) => {
   try {
     console.log("Here into BL: Get All students");
-    const students = await User.find({ role: 'student' }).maxTimeMS(5000);
+    const students = await User.find({ role: 'student' }).populate('courseID').maxTimeMS(5000);
     console.log("Here all Students:", students);
     res.json({ students: students });
   } catch (err) {
@@ -209,6 +210,7 @@ app.get("/getallstudents", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 // Get all courses
 app.get("/courses", (req, res) => {
   // Business Logic
@@ -319,6 +321,26 @@ app.get("/courses/teacher/:teacherId", (req, res) => {
         res.json({ courses: courses });
       } else {
         res.json({ msg: "No courses found for this teacher" });
+      }
+    })
+    .catch(err => {
+      console.error("Error fetching courses:", err);
+      res.status(500).json({ error: "Internal Server Error" });
+    });
+});
+//Get Courses by studentID
+app.get("/courses/student/:studentId", (req, res) => {
+  console.log("Here Into BL: Get Courses By Student ID", req.params.studentId);
+  const studentId = req.params.studentId;
+
+  // Find courses by student ID
+  Course.find({ students: studentId }) // Assuming 'students' field contains student IDs
+    .populate('teacherID') // Populate the 'teacherID' field to get the actual teacher data
+    .then(courses => {
+      if (courses && courses.length > 0) {
+        res.json({ courses: courses });
+      } else {
+        res.json({ msg: "No courses found for this student" });
       }
     })
     .catch(err => {
@@ -493,7 +515,8 @@ app.post("/evaluations", async (req, res) => {
     const feedback = new Feedback({
       notes: req.body.notes,
       evaluation: req.body.evaluation,
-      studentID: req.body.studentID
+      studentID: req.body.studentID,
+      courseID:req.body.courseID,
     });
 
     // Save the feedback (evaluation) object

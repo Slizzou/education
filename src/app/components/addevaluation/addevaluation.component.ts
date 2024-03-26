@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { courseService } from 'src/app/services/course.service';
 import { FeedbackService } from 'src/app/services/feedback.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-addevaluation',
@@ -12,21 +14,38 @@ export class AddevaluationComponent implements OnInit {
 
   evaluationform!: FormGroup;
   studentId: any | null;
+  courses: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private feedbackService: FeedbackService
+    private feedbackService: FeedbackService,
+    private uService: UserService,
+    private cService: courseService,
   ) { }
 
   ngOnInit(): void {
-    this.evaluationform = this.formBuilder.group({
-      note: [''],
-      evaluation: ['']
-    });
-
     // Extract student ID from the route parameters
     this.studentId = this.activatedRoute.snapshot.paramMap.get('id');
+    if (!this.studentId) {
+      console.error("Student ID not found");
+      return;
+    }
+
+    // Load courses for the specific student
+    this.cService.getCourseByStudentId(this.studentId).subscribe((response: any) => {
+      const studentCourses: any[] = response.courses;
+      studentCourses.forEach((course: any) => {
+        console.log("Course:", course);
+        this.courses.push(course); // Assuming the course object contains necessary data
+      });
+    });
+
+    this.evaluationform = this.formBuilder.group({
+      note: [''],
+      evaluation: [''],
+      courseId: [''] // Initialize courseId control
+    });
   }
 
   addEvaluation() {
@@ -40,7 +59,8 @@ export class AddevaluationComponent implements OnInit {
     const evaluation = {
       note: evaluationData.note,
       evaluation: evaluationData.evaluation,
-      studentID: this.studentId // Add student ID obtained from the path
+      studentID: this.studentId,
+      courseID: evaluationData.courseId // Include selected course ID
     };
 
     // Call the feedback service to add the evaluation
@@ -54,21 +74,17 @@ export class AddevaluationComponent implements OnInit {
       }
     });
   }
+
+  // Define selectCourse method
+  selectCourse(event: Event) {
+    const courseId = (event.target as HTMLSelectElement).value;
+    console.log('Selected Course ID:', courseId);
+    const selectedCourse = this.courses.find(course => course._id === courseId);
+    console.log('Selected Course:', selectedCourse);
+
+    // Set the selected course ID in the form control
+    this.evaluationform.patchValue({
+      courseId: courseId
+    });
+  }
 }
-
-
-
-/*
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { FeedbackService } from 'src/app/services/feedback.service';
-
-@Component({
-  selector: 'app-add-evaluation',
-  templateUrl: './add-evaluation.component.html',
-  styleUrls: ['./add-evaluation.component.css']
-})
-export class AddEvaluationComponent implements OnInit {
-  
-*/

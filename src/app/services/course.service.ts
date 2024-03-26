@@ -28,6 +28,9 @@ import { Injectable } from '@angular/core';
     getCourseByTeacherId(teacherId: any) {
       return this.httpClient.get<{ courses: any }>(`${this.courseURL}/teacher/${teacherId}`);
     }
+    getCourseByStudentId(studentId: any) {
+      return this.httpClient.get<{ courses: any }>(`${this.courseURL}/student/${studentId}`);
+    }
     //Req3
     // Return msg(String)Response (boolean)
     deleteCourseById(id:any){
