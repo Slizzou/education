@@ -206,7 +206,7 @@ app.get("/courses", (req, res) => {
   // Business Logic
   console.log("here into BL: Get All courses");
 
-  Course.find().then(
+  Course.find().populate("teacherID").populate("students").then(
     (docs) => {
       console.log("Here all docs", docs)
       res.json({ courses: docs })
@@ -256,6 +256,7 @@ app.post("/users/login/", (req, res) => {
             id: doc._id,
             avatar: doc.avatar,
             cv: doc.cv,
+            phoneNumber:doc.phoneNumber,
           }
             ,
 
@@ -572,7 +573,21 @@ app.post("/evaluations", async (req, res) => {
   }
 });
 
-//Get all evaluations
+//Get User By phone Number 
+app.get("/users/studentparent/:phoneNumber", (req, res) => {
+  console.log("Here Into BL : Get User By PhoneNumber", req.params.phoneNumber);
+  let phoneNumber = req.params.phoneNumber;
+  User.findOne({ phoneNumber: phoneNumber }).then(
+    (doc) => {
+      if (doc) {
+        res.json({ obj: doc });
+      } else {
+        res.json({ msg: "Not Found" });
+      }
+    }
+  );
+});
+
 
 
 

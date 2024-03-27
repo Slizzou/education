@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { coursesTab } from 'src/app/data/courseData';
+import { courseService } from 'src/app/services/course.service';
 
 @Component({
   selector: 'app-courses',
@@ -7,10 +7,22 @@ import { coursesTab } from 'src/app/data/courseData';
   styleUrls: ['./courses.component.css']
 })
 export class CoursesComponent implements OnInit {
-courses:any=coursesTab
-  constructor() { }
+  courses: any;
+  constructor(private courseService: courseService) { }
 
   ngOnInit(): void {
+    this.getAllCourses();
   }
 
+  getAllCourses(): void {
+    this.courseService.getAllcourses().subscribe(
+      (response: any) => {
+        console.log('Response:', response);
+        this.courses = response.courses;
+      },
+      (error: any) => {
+        console.error('Error fetching courses:', error);
+      }
+    );
+  }
 }

@@ -20,10 +20,16 @@
                                 <li><a href="#">Page</a></li>
                                 <li *ngIf="!isLoggedIN()"><a [routerLink]="'login'">Login</a></li>
                                 <li *ngIf="isLoggedIN()"><a (click)="logout()" class="nav-link">Logout</a></li>
-                                <div *ngIf="isLoggedIN() && user">
-                                    <span>Welcome {{ user.fName }}</span>
-                                    <img src="{{ user.avatar}}" >
-                                </div>
+                                <li *ngIf="isLoggedIN() && user">
+                                    <div class="user-info d-flex align-items-center">
+                                        <span>Welcome {{ user.fName }}</span>
+                                        <ng-container *ngIf="user.avatar">
+                                            <img [src]="user.avatar" alt="User Avatar" style="width: 40px; height: 40px; border-radius: 50%; margin-left: 10px;">
+                                        </ng-container>
+                                    </div>
+                                </li>
+                                
+                                
                                 <li *ngIf="!isLoggedIN()" class="dropdown show" >
                                     <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
                                         id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
@@ -49,6 +55,28 @@
                                         <a class="dropdown-item" [routerLink]="'teacherdashboard'">Teacher</a>
                                     </div>
                                 </li>
+                                <!-- Student Dashboard -->
+                                <li class="dropdown show" *ngIf="isLoggedIN() && user.role == 'student'">
+                                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
+                                        id="studentDashboardLink" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        Student Dashboard
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="studentDashboardLink">
+                                        <!-- Add student dashboard links here -->
+                                    </div>
+                                </li>
+                                <!-- Parent Dashboard -->
+                                <li class="dropdown show" *ngIf="isLoggedIN() && user.role == 'parent'">
+                                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
+                                        id="parentDashboardLink" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        Parent Dashboard
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="parentDashboardLink">
+                                        <!-- Add parent dashboard links here -->
+                                    </div>
+                                </li>
                                 <!-- Admin Dashboard -->
                                 <li class="dropdown show" *ngIf="isLoggedIN() && user.role == 'admin'">
                                     <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
@@ -63,30 +91,7 @@
                                     </div>
                                 </li>
                             </ul>
-                            <div class="search_button"><i class="fa fa-search" aria-hidden="true"></i></div>
-                            <div class="shopping_cart"><i class="fa fa-shopping-cart" aria-hidden="true"></i></div>
-                            <div class="hamburger menu_mm">
-                                <i class="fa fa-bars menu_mm" aria-hidden="true"></i>
-                            </div>
                         </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Header Search Panel -->
-    <div class="header_search_container">
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <div class="header_search_content d-flex flex-row align-items-center justify-content-end">
-                        <form action="#" class="header_search_form">
-                            <input type="search" class="search_input" placeholder="Search" required="required">
-                            <button class="header_search_button d-flex flex-column align-items-center justify-content-center">
-                                <i class="fa fa-search" aria-hidden="true"></i>
-                            </button>
-                        </form>
                     </div>
                 </div>
             </div>

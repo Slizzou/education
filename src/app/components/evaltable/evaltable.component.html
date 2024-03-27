@@ -6,8 +6,6 @@
       <th scope="col">Evaluation</th>
       <th scope="col">Student Name</th>
       <th scope="col">Course Name</th>
-
-
     </tr>
   </thead>
   <tbody>
@@ -16,9 +14,8 @@
         <td>{{ eval._id }}</td>
         <td>{{ eval.note }}</td>
         <td>{{ eval.evaluation }}</td>
-        <td>{{ eval.studentID.firstName }}</td> <!-- Access student's first name -->
-        <td>{{ eval.courseID.name }}</td> <!-- Access student's first name -->
-
+        <td>{{ eval.studentID?.firstName }}</td> <!-- Access student's first name if it exists -->
+        <td>{{ eval.courseID?.name }}</td> <!-- Access course name if it exists -->
       </tr>
     </ng-container>
   </tbody>

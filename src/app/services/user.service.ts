@@ -93,6 +93,10 @@ export class UserService {
 
 
   }
+  getUserByPhoneNumber(phone:any){
+    return this.http.get<{ obj: any ,msg:any}>(`${this.userUrl}/studentparent/${phone}`)
+
+  }
   getStudentsByTeacherId(teacherId: any) {
     return this.http.get<{ students: any }>(`${this.userUrl}/teacher/${teacherId}`);
   }

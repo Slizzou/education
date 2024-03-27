@@ -35,8 +35,18 @@ export class LoginComponent implements OnInit {
           if (decodedToken.role=='admin'){
             this.router.navigate(['admin']);
 
-          } else {
-            this.router.navigate(['']);
+          } else if (decodedToken.role=='parent'){
+            this.router.navigate(['parentdashboard']);
+
+          }
+          else if (decodedToken.role=='student'){
+            this.router.navigate(['studentdashboard']);
+
+
+          }
+          else{
+            this.router.navigate(['teacherdashboard']);
+
 
           }
 

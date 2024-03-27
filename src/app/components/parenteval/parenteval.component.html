@@ -1,0 +1,23 @@
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Note</th>
+        <th scope="col">Evaluation</th>
+        <th scope="col">Student Name</th>
+        <th scope="col">Course Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let eval of evaluations">
+        <tr>
+          <td>{{ eval._id }}</td>
+          <td>{{ eval.note }}</td>
+          <td>{{ eval.evaluation }}</td>
+          <td>{{ eval.studentID?.firstName }}</td> <!-- Access student's first name if it exists -->
+          <td>{{ eval.courseID?.name }}</td> <!-- Access course name if it exists -->
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+  

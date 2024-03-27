@@ -33,6 +33,10 @@ import { TeacherdashboardComponent } from './components/teacherdashboard/teacher
 import { StudentsTableComponent } from './components/students-table/students-table.component';
 import { TeachercoursesComponent } from './components/teachercourses/teachercourses.component';
 import { EvaltableComponent } from './components/evaltable/evaltable.component';
+import { ParentdashboardComponent } from './components/parentdashboard/parentdashboard.component';
+import { StudentdashboardComponent } from './components/studentdashboard/studentdashboard.component';
+import { ParentevalComponent } from './components/parenteval/parenteval.component';
+import { StudentcoursesComponent } from './components/studentcourses/studentcourses.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +69,10 @@ import { EvaltableComponent } from './components/evaltable/evaltable.component';
     StudentsTableComponent,
     TeachercoursesComponent,
     EvaltableComponent,
+    ParentdashboardComponent,
+    StudentdashboardComponent,
+    ParentevalComponent,
+    StudentcoursesComponent,
 
   ],
   imports: [
