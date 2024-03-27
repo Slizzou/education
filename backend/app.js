@@ -587,6 +587,31 @@ app.get("/users/studentparent/:phoneNumber", (req, res) => {
     }
   );
 });
+//Get teachers By name 
+
+app.get("/getteachersbyname/:name", async (req, res) => {
+  try {
+    console.log("Here into BL: Get Teachers by Name");
+    const { name } = req.params; // Get the name from URL parameters
+
+    if (!name) {
+      return res.status(400).json({ error: "Name parameter is required" });
+    }
+
+    // Search for teachers by name
+    const teachers = await User.find({ firstName: { $regex: new RegExp(name, "i") }, role: { $in: ['teacher', 'requested_teacher'] } }).populate('courseID').maxTimeMS(5000);
+
+    console.log("Teachers found:", teachers);
+
+    // Returning the teachers as JSON
+    res.json({ teachers: teachers });
+  } catch (err) {
+    console.error("Error:", err);
+    // Sending a 500 status code in case of error
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 
 

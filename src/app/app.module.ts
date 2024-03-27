@@ -37,6 +37,8 @@ import { ParentdashboardComponent } from './components/parentdashboard/parentdas
 import { StudentdashboardComponent } from './components/studentdashboard/studentdashboard.component';
 import { ParentevalComponent } from './components/parenteval/parenteval.component';
 import { StudentcoursesComponent } from './components/studentcourses/studentcourses.component';
+import { SearchteacherComponent } from './components/searchteacher/searchteacher.component';
+import { FoundedTeacherComponent } from './components/founded-teacher/founded-teacher.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +75,8 @@ import { StudentcoursesComponent } from './components/studentcourses/studentcour
     StudentdashboardComponent,
     ParentevalComponent,
     StudentcoursesComponent,
+    SearchteacherComponent,
+    FoundedTeacherComponent,
 
   ],
   imports: [

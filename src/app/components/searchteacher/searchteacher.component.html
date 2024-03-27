@@ -1,0 +1,15 @@
+<div class="search-container">
+  <label for="teacherName">Enter Teacher Name:</label>
+  <input type="text" id="teacherName" [(ngModel)]="searchTerm" (keyup.enter)="search()">
+  <button (click)="search()">Search</button>
+</div>
+
+<!-- Add spacing -->
+<div style="margin-top: 20px;"></div>
+
+<div>
+  <app-founded-teacher 
+    *ngFor="let teacher of teachers?.teachers" 
+    [teacher]="teacher">
+  </app-founded-teacher>
+</div>

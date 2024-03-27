@@ -13,6 +13,7 @@ import { AddevaluationComponent } from './components/addevaluation/addevaluation
 import { HomepageComponent } from './components/homepage/homepage.component';
 import { ParentdashboardComponent } from './components/parentdashboard/parentdashboard.component';
 import { StudentdashboardComponent } from './components/studentdashboard/studentdashboard.component';
+import { SearchteacherComponent } from './components/searchteacher/searchteacher.component';
 
 
 
@@ -41,6 +42,8 @@ const routes: Routes = [
 {path:"teacherdashboard",component:TeacherdashboardComponent},
 {path:"parentdashboard",component:ParentdashboardComponent},
 {path:"studentdashboard",component:StudentdashboardComponent},
+{path:"search",component:SearchteacherComponent},
+
 
 
 

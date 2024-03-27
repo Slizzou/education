@@ -10,6 +10,8 @@ export class UserService {
   parentsUrl:string="http://localhost:3000/getallparents";
   studentsUrl:string="http://localhost:3000/getallstudents";
   teacherUrl:string="http://localhost:3000/teachers";
+  searchUrl:string="http://localhost:3000/getteachersbyname"
+  
 
 
 
@@ -68,6 +70,11 @@ export class UserService {
   
   
   }
+  getTeachersByname(name:any) {
+    return this.http.get<{ teachers: any }>(`${this.searchUrl}/${name}`)
+  
+  
+  }
   deleteUserById(id: number) {
     return this.http.delete<{ users: any , response: string }>(`${this.userUrl}/${id}`);
   }
@@ -105,6 +112,7 @@ export class UserService {
   updateStudentCourseId(studentId: any, courseId: any) {
     return this.http.put<{ obj: any, msg: any }>(`${this.userUrl}/${studentId}/course`, { courseId });
   }
+  
 }
 
 

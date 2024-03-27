@@ -70,17 +70,23 @@ export class AddCourseComponent implements OnInit {
       // Retrieve the existing teacherID before updating
       this.cService.getCourseById(this.courseId).subscribe((courseData) => {
         const existingTeacherId = courseData.obj.teacherID;
-  
+    
+        // Check if any of the course information is edited
+        const name = courseFormValue.name ? courseFormValue.name : courseData.obj.name;
+        const description = courseFormValue.description ? courseFormValue.description : courseData.obj.description;
+        const duration = courseFormValue.duration ? courseFormValue.duration : courseData.obj.duration;
+        const students = courseFormValue.selectedStudents ? courseFormValue.selectedStudents : courseData.obj.students;
+    
         // Editing an existing course
         const course = {
           id: this.courseId, // Use the obtained course ID
-          name: courseFormValue.name,
-          description: courseFormValue.description,
-          duration: courseFormValue.duration,
+          name: name,
+          description: description,
+          duration: duration,
           teacherID: existingTeacherId, // Use the existing teacherID
-          students: courseFormValue.selectedStudents // No need to include selectedStudentIds
+          students: students // Use the existing students or the selected students
         };
-  
+    
         // Call the editCourse method to update the existing course
         this.cService.editCourse(course).subscribe((data) => {
           if (data) {
@@ -92,7 +98,9 @@ export class AddCourseComponent implements OnInit {
           }
         });
       });
-    } else {
+    }
+    
+    else {
       // Adding a new course
       const course = {
         name: courseFormValue.name,
